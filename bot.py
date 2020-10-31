@@ -8,8 +8,6 @@ import discord
 from discord.ext import commands
 import re
 import os
-import asyncio
-
 global sparkles
 
 sparkles = []
@@ -25,7 +23,7 @@ async def on_message(message):
         return
 
     # sparkles message if sparkle on
-    if message.channel.id in sparkles and message.content.lower() != 'sparkle off':
+    elif message.channel.id in sparkles and message.content.lower() != 'sparkle off':
         # subs out spaces for sparkles and attaches sparkles to the front and back
         string = ":sparkles: " + re.sub(r'\s+', ' :sparkles: ', message.content) + " :sparkles:"
         if len(string) > 2000:
@@ -33,10 +31,25 @@ async def on_message(message):
                 await message.channel.send(chunk)
         await message.channel.send(string)
 
-    if 'ahlie' in message.content.lower():
+    elif 'sparkle' in message.content.lower():
+        string = message.content.lower().split(' ')
+        for x in range(len(string)):
+            if string[x+1] == 'message' or string[x+1] == 'on' or string[x+1] == 'off':
+                break
+            elif string[x] == 'sparkle':
+                string[x+1] = ":sparkles: " + string[x+1] + " :sparkles:"
+                string.pop(x)
+                break
+        if string[1] == 'message' or string[1] == 'on' or string[1] == 'off':
+            pass
+        else:
+            string = ' '.join(string)
+            await message.channel.send(string)
+
+    elif 'ahlie' in message.content.lower():
         await message.channel.send(":sparkles: TRUE :sparkles:")
 
-    if 'good morning' in message.content.lower():
+    elif 'good morning' in message.content.lower():
         await message.channel.send(":sparkles: Good morning! :sparkles:")
 
     # allows the bot to process all the commands below
