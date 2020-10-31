@@ -8,8 +8,10 @@ import discord
 from discord.ext import commands
 import re
 import os
+import asyncio
 
 global sparkles
+
 sparkles = []
 
 BOT_TOKEN = os.environ.get('BOT_TOKEN')
@@ -18,11 +20,17 @@ bot = discord.ext.commands.Bot('sparkle ', allowed_mentions=discord.AllowedMenti
 
 @bot.event
 async def on_message(message):
+    # stops bot from looping itself
+    if message.author == bot.user:
+        return
+
+    # sparkles message if sparkle on
     if message.channel.id in sparkles and message.content.lower() != 'sparkle off':
-        # subs out spakles for sparkles and attaches sparkles to the front and back
-        string = ":sparkles: " + re.sub('\s', ' :sparkles: ', message.content) + " :sparkles:"
+        # subs out spaces for sparkles and attaches sparkles to the front and back
+        string = ":sparkles: " + re.sub(r'\s+', ' :sparkles: ', message.content) + " :sparkles:"
         if len(string) > 2000:
-            await message.channel.send("That message is too long by " + str(len(string) - 2000) + " characters!")
+            for chunk in [string[i:i+2000] for i in range(0, len(string), 2000)]:
+                await message.channel.send(chunk)
         await message.channel.send(string)
 
     if 'ahlie' in message.content.lower():
@@ -37,14 +45,32 @@ async def on_message(message):
 
 @bot.command()
 async def on(ctx):
+    """
+    Enables the sparkling of all messages in this channel
+    """
     sparkles.append(ctx.channel.id)
     await ctx.message.add_reaction('👍')
 
 
 @bot.command()
 async def off(ctx):
+    """
+    Disables the sparkling of all messages in this channel
+    """
     sparkles.remove(ctx.channel.id)
     await ctx.message.add_reaction('👍')
+
+
+@bot.command()
+async def message(ctx, *, arg):
+    """
+    Sparkles this message only
+    """
+    string = ":sparkles: " + re.sub(r'\s+', ' :sparkles: ', ctx.message.content) + " :sparkles:"
+    if len(string) > 2000:
+        for chunk in [string[i:i + 2000] for i in range(0, len(string), 2000)]:
+            await ctx.send(chunk[21:len(chunk)])
+    await ctx.send(string[37:len(string)])
 
 
 bot.run(BOT_TOKEN)
