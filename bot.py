@@ -5,7 +5,7 @@ invite link: https://discord.com/oauth2/authorize?client_id=760945753379176498&s
 """
 
 import discord
-from datetime import datetime
+import datetime
 from discord.ext import commands, tasks
 import re
 import os
@@ -14,9 +14,11 @@ global sparkles
 global mudae_reminder
 sparkles = []
 mudae_reminder = []
+birthdays = {"11-8": "<@610129797166923796>"}
+birthday_channels = []
 
 BOT_TOKEN = os.environ.get('BOT_TOKEN')
-bot = discord.ext.commands.Bot('sparkle ', allowed_mentions=discord.AllowedMentions.none())
+bot = discord.ext.commands.Bot('sparkle ', allowed_mentions=discord.AllowedMentions(users=True))
 
 
 @bot.event
@@ -38,13 +40,13 @@ async def on_message(message):
     elif 'sparkle' in message.content.lower():
         string = message.content.lower().split(' ')
         for x in range(len(string)):
-            if string[x+1] == 'message' or string[x+1] == 'on' or string[x+1] == 'off' or string[x+1] == 'help' or string[x+1] == 'mudae':
+            if string[x+1] == 'message' or string[x+1] == 'on' or string[x+1] == 'off' or string[x+1] == 'help' or string[x+1] == 'mudae' or string[x+1] == 'birthday':
                 break
             elif string[x] == 'sparkle':
                 string[x+1] = ":sparkles: " + string[x+1] + " :sparkles:"
                 string.pop(x)
                 break
-        if string[1] == 'message' or string[1] == 'on' or string[1] == 'off' or string[1] == 'help' or string[1] == 'mudae':
+        if string[1] == 'message' or string[1] == 'on' or string[1] == 'off' or string[1] == 'help' or string[1] == 'mudae' or string[1] == 'birthday':
             pass
         else:
             string = ' '.join(string)
@@ -57,6 +59,10 @@ async def on_message(message):
     # good morning response
     elif 'good morning' in message.content.lower():
         await message.channel.send(":sparkles: Good morning! :sparkles:")
+
+    # get birthdays
+    elif 'get_birthday' in message.content.lower():
+        await message.channel.send(birthday_channels)
 
     # allows the bot to process all the commands below
     await bot.process_commands(message)
@@ -105,14 +111,37 @@ async def mudae(ctx):
         await ctx.send("I'll stop sending reminders to roll in this channel.")
 
 
+@bot.command()
+async def birthday(ctx):
+    if ctx.channel.id not in birthday_channels:
+        birthday_channels.append(ctx.channel.id)
+        print("Adding #{} in {} to the birthday list.".format(ctx.channel.name, ctx.guild.name))
+    else:
+        birthday_channels.remove(ctx.channel.id)
+        print("Removing #{} in {} to the birthday list.".format(ctx.channel.name, ctx.guild.name))
+
+
 @tasks.loop(seconds=55.0)
 async def roll_reminder():
-    if datetime.now().minute == 30:
+    if datetime.datetime.now().minute == 30:
         for c in mudae_reminder:
             channel = bot.get_channel(c)
             await channel.send('✨ time ✨ to ✨ roll! ✨')
 
 roll_reminder.start()
+
+
+@tasks.loop(seconds=55.0)
+async def birthday_wish():
+    today = datetime.date.today()
+    time = datetime.datetime.now()
+    date = today.strftime("%m-%d")
+    if date in birthdays and time.hour == 0 and time.minute == 0:
+        for c in birthday_channels:
+            channel = bot.get_channel(c)
+            await channel.send("Happy birthday {}!".format(birthdays[date]))
+
+birthday_wish.start()
 
 
 bot.run(BOT_TOKEN)
