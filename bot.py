@@ -38,19 +38,27 @@ async def on_message(message):
     # sparkles individual words
     elif 'sparkle' in message.content.lower():
         string = message.content.lower().split(' ')
+        # account for if you're just sparkling one word
         if len(string) == 2:
             string = "✨ {} ✨".format(string[1])
             await message.channel.send(string)
+
+        # if sparkling in a message
         else:
+            # iterate through the message
             for x in range(len(string)):
+                # breaks if its a built in command (very hacky will have to re-do at some point)
                 if string[x+1] == 'message' or string[x+1] == 'on' or string[x+1] == 'off' or string[x+1] == 'help' or string[x+1] == 'mudae' or string[x+1] == 'birthday':
                     break
+                # sparkles the next word and removes "sparkle" from the list
                 elif string[x] == 'sparkle':
                     string[x+1] = ":sparkles: " + string[x+1] + " :sparkles:"
                     string.pop(x)
                     break
+            # skip entirely if its a built in command (very hacky will have to re-do at some point)
             if string[1] == 'message' or string[1] == 'on' or string[1] == 'off' or string[1] == 'help' or string[1] == 'mudae' or string[1] == 'birthday':
                 pass
+            # join list back into a string and return
             else:
                 string = ' '.join(string)
                 await message.channel.send(string)
