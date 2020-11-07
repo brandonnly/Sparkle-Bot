@@ -38,18 +38,22 @@ async def on_message(message):
     # sparkles individual words
     elif 'sparkle' in message.content.lower():
         string = message.content.lower().split(' ')
-        for x in range(len(string)):
-            if string[x+1] == 'message' or string[x+1] == 'on' or string[x+1] == 'off' or string[x+1] == 'help' or string[x+1] == 'mudae' or string[x+1] == 'birthday':
-                break
-            elif string[x] == 'sparkle':
-                string[x+1] = ":sparkles: " + string[x+1] + " :sparkles:"
-                string.pop(x)
-                break
-        if string[1] == 'message' or string[1] == 'on' or string[1] == 'off' or string[1] == 'help' or string[1] == 'mudae' or string[1] == 'birthday':
-            pass
-        else:
-            string = ' '.join(string)
+        if len(string) == 2:
+            string = "✨ {} ✨".format(string[1])
             await message.channel.send(string)
+        else:
+            for x in range(len(string)):
+                if string[x+1] == 'message' or string[x+1] == 'on' or string[x+1] == 'off' or string[x+1] == 'help' or string[x+1] == 'mudae' or string[x+1] == 'birthday':
+                    break
+                elif string[x] == 'sparkle':
+                    string[x+1] = ":sparkles: " + string[x+1] + " :sparkles:"
+                    string.pop(x)
+                    break
+            if string[1] == 'message' or string[1] == 'on' or string[1] == 'off' or string[1] == 'help' or string[1] == 'mudae' or string[1] == 'birthday':
+                pass
+            else:
+                string = ' '.join(string)
+                await message.channel.send(string)
 
     # ahlie response
     elif 'ahlie' in message.content.lower():
