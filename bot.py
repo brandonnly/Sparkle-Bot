@@ -59,10 +59,6 @@ async def on_message(message):
     elif 'good morning' in message.content.lower():
         await message.channel.send(":sparkles: Good morning! :sparkles:")
 
-    # get birthdays
-    elif 'get_birthday' in message.content.lower():
-        await message.channel.send(birthday_channels)
-
     # allows the bot to process all the commands below
     await bot.process_commands(message)
 
