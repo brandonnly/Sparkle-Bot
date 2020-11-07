@@ -97,29 +97,6 @@ async def message(ctx, *, arg):
     await ctx.send(string[37:len(string)])
 
 
-@bot.command()
-async def mudae(ctx):
-    """
-    Toggles mudae roll reminder in the current channel
-    """
-    if ctx.channel.id not in mudae_reminder:
-        mudae_reminder.append(ctx.channel.id)
-        await ctx.send("I'll send reminders to roll in this channel.")
-    else:
-        mudae_reminder.remove(ctx.channel.id)
-        await ctx.send("I'll stop sending reminders to roll in this channel.")
-
-
-@bot.command()
-async def birthday(ctx):
-    if ctx.channel.id not in birthday_channels:
-        birthday_channels.append(ctx.channel.id)
-        print("Adding #{} in {} to the birthday list.".format(ctx.channel.name, ctx.guild.name))
-    else:
-        birthday_channels.remove(ctx.channel.id)
-        print("Removing #{} in {} to the birthday list.".format(ctx.channel.name, ctx.guild.name))
-
-
 @tasks.loop(seconds=55.0)
 async def roll_reminder():
     if datetime.datetime.now().minute == 29:
