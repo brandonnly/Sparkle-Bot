@@ -13,12 +13,11 @@ import os
 global sparkles
 global mudae_reminder
 sparkles = []
-mudae_reminder = []
 birthdays = {"11-8": "<@610129797166923796>"}
-birthday_channels = []
 
+intents = discord.Intents.default()
 BOT_TOKEN = os.environ.get('BOT_TOKEN')
-bot = discord.ext.commands.Bot('sparkle ', allowed_mentions=discord.AllowedMentions(users=True))
+bot = discord.ext.commands.Bot('sparkle ', allowed_mentions=discord.AllowedMentions(users=True), intents=intents)
 
 
 @bot.event
@@ -123,10 +122,16 @@ async def birthday(ctx):
 
 @tasks.loop(seconds=55.0)
 async def roll_reminder():
-    if datetime.datetime.now().minute == 30:
-        for c in mudae_reminder:
-            channel = bot.get_channel(c)
-            await channel.send('✨ time ✨ to ✨ roll! ✨')
+    if datetime.datetime.now().minute == 29:
+        server = bot.get_guild(692172614059294780)
+        channel = server.get_channel(768209448052457483)
+        await channel.send('✨ time ✨ to ✨ roll! ✨')
+
+
+@roll_reminder.before_loop
+async def before_roll_reminder_loop():
+    await bot.wait_until_ready()
+
 
 roll_reminder.start()
 
@@ -137,9 +142,15 @@ async def birthday_wish():
     time = datetime.datetime.now()
     date = today.strftime("%m-%d")
     if date in birthdays and time.hour == 0 and time.minute == 0:
-        for c in birthday_channels:
-            channel = bot.get_channel(c)
-            await channel.send("Happy birthday {}!".format(birthdays[date]))
+        server = bot.get_guild(692172614059294780)
+        channel = server.get_guild(692172614059294785)
+        await channel.send(":sparkles: Happy :sparkles: birthday :sparkles: {}! :sparkles:".format(birthdays[date]))
+
+
+@birthday_wish.before_loop
+async def before_birthday_wish_loop():
+    await bot.wait_until_ready()
+
 
 birthday_wish.start()
 
