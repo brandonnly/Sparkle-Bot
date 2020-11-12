@@ -33,7 +33,8 @@ async def on_message(message):
         if len(string) > 2000:
             for chunk in [string[i:i+2000] for i in range(0, len(string), 2000)]:
                 await message.channel.send(chunk)
-        await message.channel.send(string)
+        else:
+            await message.channel.send(string)
 
     # sparkles individual words
     elif 'sparkle' in message.content.lower():
