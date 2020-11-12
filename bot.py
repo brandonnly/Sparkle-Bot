@@ -75,8 +75,8 @@ async def on_message(message):
     # hi response
     elif 'hi' in message.content.lower():
         # only respond if actual word hi
-        if len(message.content) <= 3 and message.content.lower()[1].isalpha() or ' hi' in message.content.lower() \
-                or 'hi ' in message.content.lower:
+        string = f" {message.content.lower()} "
+        if len(message.content) <= 3 and message.content.lower()[1].isalpha() or ' hi ' in message.content.lower():
             await message.channel.send(":sparkles: hi! :sparkles:")
 
     # cap response
