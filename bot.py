@@ -75,6 +75,10 @@ async def on_message(message):
     elif 'hi' in message.content.lower():
         await message.channel.send(":sparkles: hi! :sparkles:")
 
+    # cap response
+    elif ':billed_cap:' in message.content.lower() or 'cap' in message.content.lower():
+        await message.channel.send(":sparkles: :billed_cap: :sparkles:")
+
     # allows the bot to process all the commands below
     await bot.process_commands(message)
 
