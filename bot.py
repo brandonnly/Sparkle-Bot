@@ -71,6 +71,10 @@ async def on_message(message):
     elif 'good morning' in message.content.lower():
         await message.channel.send(":sparkles: Good morning! :sparkles:")
 
+    # hi response
+    elif 'hi' in message.content.lower():
+        await message.channel.send(":sparkles: hi! :sparkles:")
+
     # allows the bot to process all the commands below
     await bot.process_commands(message)
 
@@ -128,7 +132,7 @@ async def birthday_wish():
     date = today.strftime("%m-%d")
     if date in birthdays and time.hour == 0 and time.minute == 0:
         server = bot.get_guild(692172614059294780)
-        channel = server.get_guild(692172614059294785)
+        channel = server.get_channel(692172614059294785)
         await channel.send(":sparkles: Happy :sparkles: birthday :sparkles: {}! :sparkles:".format(birthdays[date]))
 
 
