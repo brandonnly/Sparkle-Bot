@@ -73,7 +73,7 @@ async def on_message(message):
         await message.channel.send(":sparkles: Good morning! :sparkles:")
 
     # hi response
-    elif 'hi' in message.content.lower():
+    elif 'hi ' in message.content.lower() or ' hi' in message.content.lower():
         await message.channel.send(":sparkles: hi! :sparkles:")
 
     # cap response
